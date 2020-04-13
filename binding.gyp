@@ -1,7 +1,7 @@
 {
     "targets": [
         {
-            "target_name": "wazn-utilities",
+            "target_name": "waznutilities",
             "sources": [
                 "src/main.cc",
                 "src/cryptonote_core/cryptonote_format_utils.cpp",

@@ -1,1 +1,1 @@
-module.exports = require('bindings')('wazn-utilities.node')
+module.exports = require('bindings')('waznutilities.node')

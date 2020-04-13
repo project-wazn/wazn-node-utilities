@@ -363,4 +363,4 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("construct_mm_child_block_blob").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(construct_mm_child_block_blob)).ToLocalChecked());
 }
 
-NODE_MODULE(wazn-utilities, init)
+NODE_MODULE(waznutilities, init)
