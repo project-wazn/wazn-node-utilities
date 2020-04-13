@@ -1,0 +1,25 @@
+{
+    "name": "wazn-utilities",
+    "version": "1.0.0",
+    "description": "Node.js wrappers for WAZN",
+    "author": "Multiple",
+    "maintained by": "vermin",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/project-wazn/wazn-node-utilities.git"
+    },
+    "main": "wazn-utilities",
+    "dependencies": {
+        "bindings": "*",
+        "nan": "^2.8.0"
+    },
+    "keywords": [
+        "wazn",
+        "cryptonight",
+        "cryptonote",
+        "forknote",
+        "bytecoin",
+        "monero"
+    ]
+}
