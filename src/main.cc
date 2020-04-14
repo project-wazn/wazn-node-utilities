@@ -130,7 +130,8 @@ static bool construct_parent_block(const cryptonote::block& b, cryptonote::block
 NAN_METHOD(convert_blob) { // (parentBlockBuffer, cnBlobType)
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     blobdata input = std::string(Buffer::Data(target), Buffer::Length(target));
@@ -161,7 +162,8 @@ NAN_METHOD(convert_blob) { // (parentBlockBuffer, cnBlobType)
 NAN_METHOD(get_block_id) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     blobdata input = std::string(Buffer::Data(target), Buffer::Length(target));
@@ -187,8 +189,9 @@ NAN_METHOD(get_block_id) {
 NAN_METHOD(construct_block_blob) { // (parentBlockTemplateBuffer, nonceBuffer, cnBlobType)
     if (info.Length() < 2) return THROW_ERROR_EXCEPTION("You must provide two arguments.");
 
-    Local<Object> block_template_buf = info[0]->ToObject();
-    Local<Object> nonce_buf = info[1]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> block_template_buf = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+    Local<Object> nonce_buf = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
 
     if (!Buffer::HasInstance(block_template_buf) || !Buffer::HasInstance(nonce_buf)) return THROW_ERROR_EXCEPTION("Both arguments should be buffer objects.");
     if (Buffer::Length(nonce_buf) != 4) return THROW_ERROR_EXCEPTION("Nonce buffer has invalid size.");
@@ -224,8 +227,8 @@ NAN_METHOD(construct_block_blob) { // (parentBlockTemplateBuffer, nonceBuffer, c
 NAN_METHOD(address_decode) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
-
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     blobdata input = std::string(Buffer::Data(target), Buffer::Length(target));
@@ -254,8 +257,8 @@ NAN_METHOD(address_decode) {
 NAN_METHOD(address_decode_integrated) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
-
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     blobdata input = std::string(Buffer::Data(target), Buffer::Length(target));
@@ -289,8 +292,9 @@ NAN_METHOD(get_merged_mining_nonce_size) {
 NAN_METHOD(construct_mm_parent_block_blob) { // (parentBlockTemplate, blob_type, childBlockTemplate)
     if (info.Length() < 3) return THROW_ERROR_EXCEPTION("You must provide three arguments (parentBlock, blob_type, childBlock).");
 
-    Local<Object> target       = info[0]->ToObject();
-    Local<Object> child_target = info[2]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+    Local<Object> child_target = info[2]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
 
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("First argument should be a buffer object.");
     if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Second argument should be a number");
@@ -322,8 +326,9 @@ NAN_METHOD(construct_mm_parent_block_blob) { // (parentBlockTemplate, blob_type,
 NAN_METHOD(construct_mm_child_block_blob) { // (shareBuffer, blob_type, childBlockTemplate)
     if (info.Length() < 3) return THROW_ERROR_EXCEPTION("You must provide three arguments (shareBuffer, blob_type, block2).");
 
-    Local<Object> block_template_buf       = info[0]->ToObject();
-    Local<Object> child_block_template_buf = info[2]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> block_template_buf = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+    Local<Object> child_block_template_buf = info[2]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
 
     if (!Buffer::HasInstance(block_template_buf)) return THROW_ERROR_EXCEPTION("First argument should be a buffer object.");
     if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Second argument should be a number");
@@ -357,7 +362,6 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("convert_blob").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(convert_blob)).ToLocalChecked());
     Nan::Set(target, Nan::New("address_decode").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(address_decode)).ToLocalChecked());
     Nan::Set(target, Nan::New("address_decode_integrated").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(address_decode_integrated)).ToLocalChecked());
-
     Nan::Set(target, Nan::New("get_merged_mining_nonce_size").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(get_merged_mining_nonce_size)).ToLocalChecked());
     Nan::Set(target, Nan::New("construct_mm_parent_block_blob").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(construct_mm_parent_block_blob)).ToLocalChecked());
     Nan::Set(target, Nan::New("construct_mm_child_block_blob").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(construct_mm_child_block_blob)).ToLocalChecked());
